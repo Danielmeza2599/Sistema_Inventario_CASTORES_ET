@@ -1,12 +1,30 @@
-// javascript
-// filepath: c:\Users\danie\Documents\Software_Development\CASTORES\Desarrollo\Sistema_Inventario_CASTORES_ET\assets\js\login.js
-// ...existing code...
-// Simple frontend validation (replace with backend logic in production)
-document.getElementById('login-form').addEventListener('submit', function(e) {
+document.getElementById('login-form').addEventListener('submit', async function(e) {
     e.preventDefault();
-    const username = document.getElementById('username').value;
+    
+    const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-    // Example: hardcoded credentials
-    if(username === 'admin' && password === 'admin123') {
-        window.location.href = 'dashboard.html'; // Redirect to dashboard
-    } else {
+    const errorMessage = document.getElementById('error-message');
+    
+    try {
+        const response = await fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            window.location.href = data.redirect;
+        } else {
+            errorMessage.textContent = data.message;
+            errorMessage.style.display = 'block';
+        }
+    } catch (error) {
+        errorMessage.textContent = 'Error al conectar con el servidor';
+        errorMessage.style.display = 'block';
+        console.error('Error:', error);
+    }
+});

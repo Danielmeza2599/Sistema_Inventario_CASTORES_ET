@@ -27,5 +27,6 @@ if __name__ == '__main__':
     if conexion:
         print("Conexión establecida correctamente")
         conexion.close()  # No olvides cerrar la conexión
+        print("sesion finalizada correctamente")
     else:
         print("No se pudo establecer la conexión")

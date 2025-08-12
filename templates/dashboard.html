@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Sistema de Inventario</title>
+    <link rel="stylesheet" href="/assets/css/styles.css">
+    <link rel="icon" href="/assets/images/mezatechazullogosf.ico" type="image/x-icon">
+    <!-- Incluye Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <img src="/assets/images/mezatechazullogosf.ico" alt="Logo MezaTech">
+                <h2>Sistema de Inventario</h2>
+            </div>
+            
+            <nav class="menu">
+                <ul>
+                    <li class="active"><a href="#"><i class="fas fa-home"></i> Inicio</a></li>
+                    <li><a href="#"><i class="fas fa-boxes"></i> Productos</a></li>
+                    <li><a href="#"><i class="fas fa-warehouse"></i> Almacenes</a></li>
+                    <li><a href="#"><i class="fas fa-exchange-alt"></i> Movimientos</a></li>
+                    <li><a href="#"><i class="fas fa-chart-bar"></i> Reportes</a></li>
+                    <li><a href="#"><i class="fas fa-users"></i> Usuarios</a></li>
+                    <li><a href="#"><i class="fas fa-cog"></i> Configuración</a></li>
+                </ul>
+            </nav>
+            
+            <div class="user-profile">
+                <img src="/assets/images/user-avatar.png" alt="Usuario">
+                <span id="username-display">Usuario</span>
+                <a href="/logout" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <header class="top-bar">
+                <div class="search-bar">
+                    <input type="text" placeholder="Buscar...">
+                    <button><i class="fas fa-search"></i></button>
+                </div>
+                <div class="notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">3</span>
+                </div>
+            </header>
+            
+            <div class="content">
+                <h1>Bienvenido al Sistema de Inventario</h1>
+                
+                <!-- Widgets de Resumen -->
+                <div class="summary-widgets">
+                    <div class="widget">
+                        <div class="widget-header">
+                            <i class="fas fa-box-open"></i>
+                            <h3>Productos Totales</h3>
+                        </div>
+                        <div class="widget-content">
+                            <span id="total-products">0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="widget">
+                        <div class="widget-header">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <h3>Productos Bajos</h3>
+                        </div>
+                        <div class="widget-content">
+                            <span id="low-stock">0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="widget">
+                        <div class="widget-header">
+                            <i class="fas fa-warehouse"></i>
+                            <h3>Almacenes</h3>
+                        </div>
+                        <div class="widget-content">
+                            <span id="total-warehouses">0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tabla de Productos con Stock Bajo -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-exclamation-circle"></i> Productos con Stock Bajo</h3>
+                        <a href="#" class="btn">Ver todos</a>
+                    </div>
+                    <div class="card-body">
+                        <table id="low-stock-table">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Producto</th>
+                                    <th>Almacén</th>
+                                    <th>Stock Actual</th>
+                                    <th>Stock Mínimo</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Datos se llenarán con JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Gráfico de Movimientos Recientes -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-chart-line"></i> Movimientos Recientes</h3>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="movements-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/assets/js/dashboard.js"></script>
+</body>
+</html>
