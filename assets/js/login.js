@@ -1,4 +1,4 @@
-````javascript
+// javascript
 // filepath: c:\Users\danie\Documents\Software_Development\CASTORES\Desarrollo\Sistema_Inventario_CASTORES_ET\assets\js\login.js
 // ...existing code...
 // Simple frontend validation (replace with backend logic in production)
