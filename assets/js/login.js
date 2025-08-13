@@ -1,30 +1,40 @@
-document.getElementById('login-form').addEventListener('submit', async function(e) {
+document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-    const errorMessage = document.getElementById('error-message');
+    const errorElement = document.getElementById('error-message');
+    errorElement.style.display = 'none';
     
     try {
         const response = await fetch('/login', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
             },
-            body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
+            body: JSON.stringify({
+                email: email,
+                password: password
+            })
         });
+        
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.message || `Error HTTP: ${response.status}`);
+        }
         
         const data = await response.json();
         
         if (data.success) {
-            window.location.href = data.redirect;
+            // Redirigir al dashboard
+            window.location.href = '/templates/dashboard.html';
         } else {
-            errorMessage.textContent = data.message;
-            errorMessage.style.display = 'block';
+            throw new Error(data.message || 'Credenciales incorrectas');
         }
     } catch (error) {
-        errorMessage.textContent = 'Error al conectar con el servidor';
-        errorMessage.style.display = 'block';
-        console.error('Error:', error);
+        console.error('Error en el login:', error);
+        errorElement.textContent = error.message;
+        errorElement.style.display = 'block';
     }
 });

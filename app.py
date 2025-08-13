@@ -1,80 +1,57 @@
-from flask import Flask, request, jsonify, session, redirect, url_for
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 import pyodbc
-from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
-app.secret_key = 'mezatech_secret' # Cambia esto por una clave secreta más segura en producción
+CORS(app)  # Habilita CORS
 
-# Configuración de la conexión a SQL Server
 def get_db_connection():
-    server = r'.\SQLEXPRESSNEW' # Nombre del servidor
-    database = 'SistemaInventario'
-    username = 'sa'
-    password = 'mezasql'
+    return pyodbc.connect(
+        'DRIVER={ODBC Driver 17 for SQL Server};'
+        'SERVER=.\SQLEXPRESSNEW;'
+        'DATABASE=SistemaInventario;'
+        'UID=sa;'
+        'PWD=mezasql'
+    )
 
-    try:
-        conexion = pyodbc.connect(
-            f'DRIVER={{ODBC Driver 17 for SQL Server}};'
-            f'SERVER={server};'
-            f'DATABASE={database};'
-            f'UID={username};'
-            f'PWD={password}'
-        )
-        print("✅ Conexión exitosa a SQL Server")
-        return conexion
-    except Exception as e:
-        print(f"Error de conexión a la base de datos: {e}")
-        return None
-
-# Ruta para el login
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['POST', 'OPTIONS'])  # Añade OPTIONS para CORS
 def login():
-    email = request.form.get('email')
-    password = request.form.get('password')
-    
-    if not email or not password:
-        return jsonify({'success': False, 'message': 'Email y contraseña son requeridos'})
-    
-    conn = get_db_connection()
-    if conn:
-        try:
-            cursor = conn.cursor()
+    if request.method == 'OPTIONS':
+        return jsonify({'status': 'ok'}), 200
+        
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'success': False, 'message': 'No se recibieron datos'}), 400
             
-            # Consulta segura con parámetros para evitar SQL injection
-            cursor.execute(
-                "SELECT id_usuario, nombre, contrasena FROM Usuarios WHERE email = ?", 
-                (email,)
-            )
-            user = cursor.fetchone()
-            
-            if user:
-                # Comparación directa de contraseñas (mejor usar hash en producción)
-                if user.contrasena == password:
-                    session['user_id'] = user.id_usuario
-                    session['user_name'] = user.nombre
-                    return jsonify({
-                        'success': True, 
-                        'redirect': '/dashboard',
-                        'username': user.nombre
-                    })
-                else:
-                    return jsonify({'success': False, 'message': 'Contraseña incorrecta'})
-            else:
-                return jsonify({'success': False, 'message': 'Usuario no encontrado'})
-                
-        except Exception as e:
-            return jsonify({'success': False, 'message': f'Error en la base de datos: {str(e)}'})
-        finally:
-            conn.close()
-    else:
-        return jsonify({'success': False, 'message': 'Error de conexión a la base de datos'})
+        email = data.get('email')
+        password = data.get('password')
+        
+        if not email or not password:
+            return jsonify({'success': False, 'message': 'Email y contraseña son requeridos'}), 400
+        
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT id_usuario, nombre FROM Usuarios WHERE email = ? AND contrasena = ?", 
+            (email, password)
+        )
+        user = cursor.fetchone()
+        conn.close()
+        
+        if user:
+            return jsonify({
+                'success': True,
+                'user': {
+                    'id': user.id_usuario,
+                    'name': user.nombre
+                }
+            })
+        else:
+            return jsonify({'success': False, 'message': 'Credenciales incorrectas'}), 401
+    
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
 
-# Prueba de conexión y confirmacion
-#if __name__ == '__main__':
- #   conexion = get_db_connection()
-  #  if conexion:
-   #     print("Conexión establecida correctamente")
-    #    conexion.close()  # No olvides cerrar la conexión
-     #   print("sesion finalizada correctamente")
-    #else:
-     #   print("No se pudo establecer la conexión")
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)
