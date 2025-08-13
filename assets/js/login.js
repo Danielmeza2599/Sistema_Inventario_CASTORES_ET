@@ -28,7 +28,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
         
         if (data.success) {
             // Redirigir al dashboard
-            window.location.href = 'dashboard.html';
+            window.location.href = '/dashboard';
         } else {
             throw new Error(data.message || 'Credenciales incorrectas');
         }
