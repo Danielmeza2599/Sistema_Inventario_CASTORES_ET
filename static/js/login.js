@@ -7,7 +7,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
     errorElement.style.display = 'none';
     
     try {
-        const response = await fetch('http://localhost:5500/login', {
+    const response = await fetch('http://127.0.0.1:5500/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -28,7 +28,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
         
         if (data.success) {
             // Redirigir al dashboard
-            window.location.href = '/dashboard';
+            window.location.href = '/inventario';
         } else {
             throw new Error(data.message || 'Credenciales incorrectas');
         }

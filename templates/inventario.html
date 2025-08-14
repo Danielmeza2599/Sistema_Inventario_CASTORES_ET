@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administración de Inventario</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/inventario.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1><i class="fas fa-users"></i> Gestión de inventario</h1>
+            <h2>Bienvenido Usuario: {{ Usuarios.nombre }}</h2>
+        </header>
+        
+        <div class="card">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>nombre</th>
+                            <th>descripcion</th>
+                            <th>cantidad</th>
+                            <th>Estado</th>
+                            <th>Fecha Creación</th>
+                            <th>Último Login</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for nombre in Productos %}
+                        <tr>
+                            <td>{{ Productos.id_usuario }}</td>
+                            <td>{{ Productos.nombre }}</td>
+                            <td>{{ Productos.descripcion }}</td>
+                            <td>{{ Productos.cantidad }}</td>
+                            <td>
+                                <span class="status-badge {% if Productos.activo %}active{% else %}inactive{% endif %}">
+                                    {% if Productos.activo %}Activo{% else %}Inactivo{% endif %}
+                                </span>
+                            </td>
+                            <td>{{ Productos.fecha_creacion.strftime('%d/%m/%Y %H:%M') if Productos.fecha_creacion else 'N/A' }}</td>
+                            <td>{{ Productos.fecha_ultimo_login.strftime('%d/%m/%Y %H:%M') if Productos.fecha_ultimo_login else 'Nunca' }}</td>
+                            <td class="actions">
+                                <button class="btn-icon edit" title="Editar"><i class="fas fa-edit"></i></button>
+                                <button class="btn-icon delete" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
